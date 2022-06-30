@@ -6,8 +6,11 @@ import SimpleMDE from 'react-simplemde-editor';
 
 import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
+import { useSelector } from 'react-redux';
+import { isSelectAuth } from '../../redux/slices/auth';
 
 export const AddPost = () => {
+  const isAuth = useSelector(isSelectAuth)
   const imageUrl = '';
   const [value, setValue] = React.useState('');
 

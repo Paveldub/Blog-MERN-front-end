@@ -14,8 +14,6 @@ export const Login = () => {
   const dispatch = useDispatch();
   const isAuth = useSelector(isSelectAuth)
 
-  console.log(isAuth)
-
   const { 
       register, 
       handleSubmit, 
@@ -23,8 +21,8 @@ export const Login = () => {
       formState: { errors, isValid }
     } = useForm({
       defaultValues: {
-        email: 'testfront@gmail.com',
-        password: '123456'
+        email: '',
+        password: ''
       },
     mode: 'all'
   });
@@ -40,10 +38,6 @@ export const Login = () => {
       window.localStorage.setItem('token', data.payload.token)
     }
   }
-
-  useEffect(() => {
-
-  }, [])
 
   if (isAuth) {
     return <Navigate to="/" />
@@ -77,7 +71,7 @@ export const Login = () => {
           helperText={errors.password?.message}
           {...register('password', { required: 'Введите пароль' })}
         />
-        <Button type="submit" size="large" variant="contained" fullWidth>
+        <Button disabled={!isValid} type="submit" size="large" variant="contained" fullWidth>
           Войти
         </Button>
       </form>
