@@ -6,9 +6,16 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 
 import styles from "./Login.module.scss";
-import { useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form';
+import { fetchLogin, isSelectAuth } from '../../redux/slices/auth';
+import { Navigate } from "react-router-dom";
 
 export const Login = () => {
+  const dispatch = useDispatch();
+  const isAuth = useSelector(isSelectAuth)
+
+  console.log(isAuth)
+
   const { 
       register, 
       handleSubmit, 
@@ -16,14 +23,30 @@ export const Login = () => {
       formState: { errors, isValid }
     } = useForm({
       defaultValues: {
-        email: '',
-        password: ''
+        email: 'testfront@gmail.com',
+        password: '123456'
       },
-    mode: 'onChange'
+    mode: 'all'
   });
 
-  const onSubmit = (values) => {
-    console.log(values)
+  const onSubmit = async (values) => {
+    const data = await dispatch(fetchLogin(values));
+
+    if (!data.payload) {
+      alert('Не удалось авторизоваться')
+    } 
+
+    if ('token' in data.payload) {
+      window.localStorage.setItem('token', data.payload.token)
+    }
+  }
+
+  useEffect(() => {
+
+  }, [])
+
+  if (isAuth) {
+    return <Navigate to="/" />
   }
 
   return (
@@ -38,7 +61,13 @@ export const Login = () => {
           error={Boolean(errors.email?.message)}
           helperText={errors.email?.message}
           fullWidth
-          {...register('email', { required: 'Укажите почту' })}
+          {...register('email', {
+            required: 'Email is required',
+            pattern: {
+                value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                message: 'Please enter a valid email',
+            },
+          })}
         />
         <TextField 
           className={styles.field} 
