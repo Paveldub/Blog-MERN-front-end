@@ -36,7 +36,7 @@ export const Registration = () => {
       alert('Не удалось зарегестрироваться')
     } 
 
-    if ('token' in data.payload) {
+    if (data.payload) {
       window.localStorage.setItem('token', data.payload.token)
     }
   }
